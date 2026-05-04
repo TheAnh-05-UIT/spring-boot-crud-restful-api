@@ -30,6 +30,14 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public User handleUpdateUserById(Long id, User user) {
+        User userUpdate = this.handleGetUserById(id);
+        userUpdate.setEmail(user.getEmail());
+        userUpdate.setName(user.getName());
+        userUpdate.setPassword(user.getPassword());
+        return this.userRepository.save(userUpdate);
+    }
+
     public void handleDeleteUserById(Long id) {
         this.userRepository.deleteById(id);
     }
