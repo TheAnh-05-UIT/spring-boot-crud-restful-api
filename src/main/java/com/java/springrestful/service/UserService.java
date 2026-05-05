@@ -3,6 +3,7 @@ package com.java.springrestful.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.User;
@@ -12,9 +13,12 @@ import com.java.springrestful.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> handleGetAllUser() {
@@ -27,6 +31,8 @@ public class UserService {
     }
 
     public User handleCreateUser(User user) {
+        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
         return this.userRepository.save(user);
     }
 
