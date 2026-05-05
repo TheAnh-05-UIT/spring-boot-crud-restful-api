@@ -27,6 +27,7 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
 
                 )
+                .formLogin(form -> form.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
