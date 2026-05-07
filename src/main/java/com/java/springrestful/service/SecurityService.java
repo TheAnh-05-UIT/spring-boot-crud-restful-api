@@ -38,7 +38,7 @@ public class SecurityService {
             .issuedAt(now)
             .expiresAt(validity)
             .subject(authentication.getName())
-            .claim("hello","hi")
+            .claim("AUTHORITIES_KEY",authentication)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
