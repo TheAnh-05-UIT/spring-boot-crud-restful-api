@@ -1,6 +1,7 @@
 package com.java.springrestful.config;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -37,7 +38,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         RestResponse<Object> restResponse = new RestResponse<>();
         restResponse.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        restResponse.setError(authException.getCause().getMessage());
+
+        String errorMessage = Optional.ofNullable(authException.getCause())
+                .map(Throwable::getMessage).orElse(authException.getMessage());
+        restResponse.setError(errorMessage);
+
         restResponse.setMessage("Token không hợp lệ hoặc đã hết hạn (expired)...");
         objectMapper.writeValue(response.getWriter(), restResponse);
     }
