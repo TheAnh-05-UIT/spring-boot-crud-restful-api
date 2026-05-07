@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.springrestful.domain.dto.LoginDTO;
+import com.java.springrestful.service.SecurityService;
 
 import jakarta.validation.Valid;
 
@@ -16,13 +17,17 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final SecurityService securityService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public AuthController(
+            AuthenticationManagerBuilder authenticationManagerBuilder,
+            SecurityService securityService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.securityService = securityService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
 
         // nạp username và password vào security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -31,6 +36,7 @@ public class AuthController {
         // xác thực người dùng
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        return ResponseEntity.ok().body(loginDTO);
+        String newToken = this.securityService.createToken(authentication);
+        return ResponseEntity.ok().body(newToken);
     }
 }
