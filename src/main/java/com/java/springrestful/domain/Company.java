@@ -2,11 +2,15 @@ package com.java.springrestful.domain;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.java.springrestful.service.SecurityService;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,6 +29,7 @@ public class Company {
     private String address;
     private String logo;
 
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss a", timezone = "GMT+07:00")
     private Instant createAt;
     private Instant updateAt;
 
@@ -101,6 +106,14 @@ public class Company {
 
     public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
+    }
+
+    @PrePersist
+    public void handleBeforeCreateCompany() {
+        this.createBy = SecurityService.getCurrentUserLogin().isPresent() == true
+                ? SecurityService.getCurrentUserLogin().get()
+                : " ";
+        this.createAt = Instant.now();
     }
 
 }

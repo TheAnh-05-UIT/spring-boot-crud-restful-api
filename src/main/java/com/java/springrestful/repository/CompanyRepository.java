@@ -1,5 +1,11 @@
 package com.java.springrestful.repository;
 
-public class CompanyRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.java.springrestful.domain.Company;
+
+@Repository
+public interface CompanyRepository extends JpaRepository<Company, Long> {
 
 }
