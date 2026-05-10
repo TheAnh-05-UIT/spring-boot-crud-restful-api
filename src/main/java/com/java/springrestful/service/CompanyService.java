@@ -25,4 +25,8 @@ public class CompanyService {
         return this.companyRepository.findAll();
     }
 
+    public Company handleGetCompanyById(Long id) {
+        Optional<Company> optionalUser = this.companyRepository.findById(id);
+        return optionalUser.orElseThrow(() -> new RuntimeException("Company not found"));
+    }
 }
