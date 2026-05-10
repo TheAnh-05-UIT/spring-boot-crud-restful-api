@@ -29,4 +29,8 @@ public class CompanyService {
         Optional<Company> optionalUser = this.companyRepository.findById(id);
         return optionalUser.orElseThrow(() -> new RuntimeException("Company not found"));
     }
+
+    public void handleDeleteCompanyByID(Long id) {
+        this.companyRepository.deleteById(id);
+    }
 }
