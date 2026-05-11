@@ -3,6 +3,8 @@ package com.java.springrestful.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.Company;
@@ -21,8 +23,9 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public List<Company> handleGetAllCompany() {
-        return this.companyRepository.findAll();
+    public List<Company> handleGetAllCompany(Pageable pageable) {
+        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+        return pageCompany.getContent();
     }
 
     public Company handleGetCompanyById(Long id) {
