@@ -3,6 +3,8 @@ package com.java.springrestful.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> handleGetAllUser() {
-        return this.userRepository.findAll();
+    public List<User> handleGetAllUser(Pageable pageable) {
+        Page<User> pageUser = this.userRepository.findAll(pageable);
+        return pageUser.getContent();
     }
 
     public User handleGetUserById(Long id) {
