@@ -26,8 +26,21 @@ public class CompanyService {
     }
 
     public Company handleGetCompanyById(Long id) {
-        Optional<Company> optionalUser = this.companyRepository.findById(id);
-        return optionalUser.orElseThrow(() -> new RuntimeException("Company not found"));
+        Optional<Company> optionalCompany = this.companyRepository.findById(id);
+        return optionalCompany.orElseThrow(() -> new RuntimeException("Company not found"));
+    }
+
+    public Company handleUpdateCompanyByID(Long id, Company company) {
+        Optional<Company> optionalCompany = this.companyRepository.findById(id);
+        if (optionalCompany.isPresent()) {
+            Company updateCompany = optionalCompany.get();
+            updateCompany.setName(company.getName());
+            updateCompany.setDescription(company.getDescription());
+            updateCompany.setAddress(company.getAddress());
+            updateCompany.setLogo(company.getLogo());
+            return this.companyRepository.save(updateCompany);
+        }
+        return null;
     }
 
     public void handleDeleteCompanyByID(Long id) {

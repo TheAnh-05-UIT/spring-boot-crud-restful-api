@@ -45,6 +45,15 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.OK).body(companyById);
     }
 
+    @PutMapping("/companies/{id}")
+    public ResponseEntity<Company> updateCompanyById(
+            @PathVariable("id") Long id,
+            @RequestBody Company company) {
+
+        Company updateCompany = this.companyService.handleUpdateCompanyByID(id, company);
+        return ResponseEntity.status(HttpStatus.OK).body(updateCompany);
+    }
+
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<Void> deleteCompanyById(@PathVariable("id") Long id) {
         this.companyService.handleDeleteCompanyByID(id);

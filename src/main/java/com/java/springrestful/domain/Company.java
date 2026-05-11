@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,6 +32,8 @@ public class Company {
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss a", timezone = "GMT+07:00")
     private Instant createAt;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss a", timezone = "GMT+07:00")
     private Instant updateAt;
 
     private String createBy;
@@ -116,4 +119,11 @@ public class Company {
         this.createAt = Instant.now();
     }
 
+    @PreUpdate
+    public void handleAfterUpdateCompany() {
+        this.updateBy = SecurityService.getCurrentUserLogin().isPresent() == true
+                ? SecurityService.getCurrentUserLogin().get()
+                : " ";
+        this.updateAt = Instant.now();
+    }
 }
