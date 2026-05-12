@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.User;
+import com.java.springrestful.domain.dto.MetaData;
+import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.repository.UserRepository;
 
 @Service
@@ -23,9 +25,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> handleGetAllUser(Pageable pageable) {
+    public PagingResultDTO handleGetAllUser(Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(pageable);
-        return pageUser.getContent();
+
+        PagingResultDTO pagingResultDTO = new PagingResultDTO();
+        MetaData metaData = new MetaData();
+
+        metaData.setPage(pageUser.getNumber());
+        metaData.setPageSize(pageUser.getSize());
+        metaData.setPages(pageUser.getTotalPages());
+        metaData.setTotal(pageUser.getTotalElements());
+
+        pagingResultDTO.setMetaData(metaData);
+        pagingResultDTO.setResult(pageUser.getContent());
+
+        return pagingResultDTO;
     }
 
     public User handleGetUserById(Long id) {

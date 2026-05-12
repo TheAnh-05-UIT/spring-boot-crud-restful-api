@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.springrestful.domain.User;
+import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.service.UserService;
 
 @RestController
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser(
+    public ResponseEntity<PagingResultDTO> getAllUser(
             @RequestParam("current") Optional<String> currentOptional,
             @RequestParam("pageSize") Optional<String> pageSizeOptional) {
 
@@ -42,8 +43,8 @@ public class UserController {
         // pageNumber start = 0
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 
-        List<User> listUser = this.userService.handleGetAllUser(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(listUser);
+        PagingResultDTO listUserPaging = this.userService.handleGetAllUser(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(listUserPaging);
     }
 
     @GetMapping("/users/{id}")

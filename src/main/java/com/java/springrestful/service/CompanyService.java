@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.Company;
+import com.java.springrestful.domain.dto.MetaData;
+import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.repository.CompanyRepository;
 
 @Service
@@ -23,9 +25,21 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public List<Company> handleGetAllCompany(Pageable pageable) {
+    public PagingResultDTO handleGetAllCompany(Pageable pageable) {
         Page<Company> pageCompany = this.companyRepository.findAll(pageable);
-        return pageCompany.getContent();
+
+        PagingResultDTO pagingResultDTO = new PagingResultDTO();
+        MetaData metaData = new MetaData();
+
+        metaData.setPage(pageCompany.getNumber());
+        metaData.setPageSize(pageCompany.getSize());
+        metaData.setPages(pageCompany.getTotalPages());
+        metaData.setTotal(pageCompany.getTotalElements());
+
+        pagingResultDTO.setMetaData(metaData);
+        pagingResultDTO.setResult(pageCompany.getContent());
+
+        return pagingResultDTO;
     }
 
     public Company handleGetCompanyById(Long id) {
