@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.Company;
@@ -24,14 +25,15 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public PagingResultDTO handleGetAllCompany(Pageable pageable) {
-        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+    public PagingResultDTO handleGetAllCompany(Specification<Company> specification, Pageable pageable) {
+        Page<Company> pageCompany = this.companyRepository.findAll(specification, pageable);
 
         PagingResultDTO pagingResultDTO = new PagingResultDTO();
         MetaData metaData = new MetaData();
 
-        metaData.setPage(pageCompany.getNumber());
-        metaData.setPageSize(pageCompany.getSize());
+        // getNumber() start = 0
+        metaData.setPage(pageable.getPageNumber() + 1);
+        metaData.setPageSize(pageable.getPageSize());
         metaData.setPages(pageCompany.getTotalPages());
         metaData.setTotal(pageCompany.getTotalElements());
 

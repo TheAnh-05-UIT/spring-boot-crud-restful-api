@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.service.UserService;
+import com.turkraft.springfilter.boot.Filter;
 
 @RestController
 public class UserController {
@@ -30,19 +32,9 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<PagingResultDTO> getAllUser(
-            @RequestParam("current") Optional<String> currentOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+            @Filter Specification<User> specification, Pageable pageable) {
 
-        String currentString = currentOptional.isPresent() == true ? currentOptional.get() : "";
-        String pageSizeString = pageSizeOptional.isPresent() == true ? pageSizeOptional.get() : "";
-
-        int pageNumber = Integer.parseInt(currentString);
-        int pageSize = Integer.parseInt(pageSizeString);
-
-        // pageNumber start = 0
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-
-        PagingResultDTO listUserPaging = this.userService.handleGetAllUser(pageable);
+        PagingResultDTO listUserPaging = this.userService.handleGetAllUser(specification, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(listUserPaging);
     }
 
