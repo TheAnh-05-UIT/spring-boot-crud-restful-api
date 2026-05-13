@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.service.UserService;
+import com.java.springrestful.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 
 @RestController
@@ -31,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @ApiMessage("Get All Users")
     public ResponseEntity<PagingResultDTO> getAllUser(
             @Filter Specification<User> specification, Pageable pageable) {
 
