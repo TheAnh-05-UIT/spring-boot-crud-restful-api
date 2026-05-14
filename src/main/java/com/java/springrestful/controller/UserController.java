@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.springrestful.domain.User;
+import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.service.UserService;
 import com.java.springrestful.util.annotation.ApiMessage;
@@ -45,9 +46,10 @@ public class UserController {
     }
 
     @PostMapping("users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<CreateUserResultDTO> createUser(@RequestBody User user) {
         User newUser = this.userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        CreateUserResultDTO createUserResultDTO = this.userService.handleCreateUserResultDTO(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createUserResultDTO);
     }
 
     @PutMapping("users/{id}")

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.java.springrestful.domain.User;
+import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.MetaData;
 import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.repository.UserRepository;
@@ -69,5 +70,18 @@ public class UserService {
 
     public User handleGetUserByUsername(String email) {
         return this.userRepository.findByEmail(email);
+    }
+
+    public CreateUserResultDTO handleCreateUserResultDTO(User user) {
+        CreateUserResultDTO createUserResultDTO = new CreateUserResultDTO();
+        createUserResultDTO.setId(user.getId());
+        createUserResultDTO.setName(user.getName());
+        createUserResultDTO.setAge(user.getAge());
+        createUserResultDTO.setEmail(user.getEmail());
+        createUserResultDTO.setGender(user.getGender());
+        createUserResultDTO.setAddress(user.getAddress());
+        createUserResultDTO.setCreateAt(user.getCreateAt());
+        createUserResultDTO.setCreateBy(user.getCreateBy());
+        return createUserResultDTO;
     }
 }

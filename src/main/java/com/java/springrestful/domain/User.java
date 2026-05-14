@@ -2,6 +2,7 @@ package com.java.springrestful.domain;
 
 import java.time.Instant;
 
+import com.java.springrestful.service.SecurityService;
 import com.java.springrestful.util.constant.GenderEnum;
 
 import jakarta.persistence.Entity;
@@ -10,6 +11,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -130,6 +133,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @PrePersist
+    public void handleBeforeCreateCompany() {
+        this.createBy = SecurityService.getCurrentUserLogin().isPresent() == true
+                ? SecurityService.getCurrentUserLogin().get()
+                : " ";
+        this.createAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void handleAfterUpdateCompany() {
+        this.updateBy = SecurityService.getCurrentUserLogin().isPresent() == true
+                ? SecurityService.getCurrentUserLogin().get()
+                : " ";
+        this.updateAt = Instant.now();
     }
 
     @Override
