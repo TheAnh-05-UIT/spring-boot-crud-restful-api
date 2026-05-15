@@ -84,4 +84,8 @@ public class UserService {
         createUserResultDTO.setCreateBy(user.getCreateBy());
         return createUserResultDTO;
     }
+
+    public boolean existsUserByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
 }
