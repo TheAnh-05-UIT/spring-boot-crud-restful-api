@@ -4,8 +4,6 @@ import java.time.Instant;
 
 import com.java.springrestful.util.constant.GenderEnum;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 

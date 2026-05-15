@@ -1,6 +1,8 @@
 package com.java.springrestful.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.MetaData;
 import com.java.springrestful.domain.dto.PagingResultDTO;
+import com.java.springrestful.domain.dto.ResponseUserDTO;
 import com.java.springrestful.repository.UserRepository;
 
 @Service
@@ -40,8 +43,21 @@ public class UserService {
         metaData.setTotal(pageUser.getTotalElements());
 
         pagingResultDTO.setMetaData(metaData);
-        pagingResultDTO.setResult(pageUser.getContent());
 
+        List<ResponseUserDTO> listUserPaging = pageUser.getContent()
+                .stream()
+                .map(item -> new ResponseUserDTO(
+                        item.getId(),
+                        item.getName(),
+                        item.getEmail(),
+                        item.getAge(),
+                        item.getGender(),
+                        item.getAddress(),
+                        item.getCreateAt(),
+                        item.getUpdateAt()))
+                .collect(Collectors.toList());
+
+        pagingResultDTO.setResult(listUserPaging);
         return pagingResultDTO;
     }
 
@@ -86,6 +102,19 @@ public class UserService {
         createUserResultDTO.setCreateAt(user.getCreateAt());
         createUserResultDTO.setCreateBy(user.getCreateBy());
         return createUserResultDTO;
+    }
+
+    public ResponseUserDTO convertToResponseUserDTO(User user) {
+        ResponseUserDTO res = new ResponseUserDTO();
+        res.setId(user.getId());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setEmail(user.getEmail());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+        res.setCreateAt(user.getCreateAt());
+        res.setUpdateAt(user.getUpdateAt());
+        return res;
     }
 
     public boolean existsUserByEmail(String email) {
