@@ -67,8 +67,14 @@ public class UserController {
     }
 
     @DeleteMapping("users/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable("id") Long id) {
+    @ApiMessage("Delelte a User")
+    public ResponseEntity<Void> deleteUserById(@PathVariable("id") Long id)
+            throws IdInvalidException {
+        User deleteUser = this.userService.handleGetUserById(id);
+        if (deleteUser == null) {
+            throw new IdInvalidException("Id " + id + " does not exist");
+        }
         this.userService.handleDeleteUserById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Delete Success");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
