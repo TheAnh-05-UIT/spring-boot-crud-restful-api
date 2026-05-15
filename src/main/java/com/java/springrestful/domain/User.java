@@ -136,7 +136,7 @@ public class User {
     }
 
     @PrePersist
-    public void handleBeforeCreateCompany() {
+    public void handleBeforeCreateUser() {
         this.createBy = SecurityService.getCurrentUserLogin().isPresent() == true
                 ? SecurityService.getCurrentUserLogin().get()
                 : " ";
@@ -144,7 +144,7 @@ public class User {
     }
 
     @PreUpdate
-    public void handleAfterUpdateCompany() {
+    public void handleAfterUpdateUser() {
         this.updateBy = SecurityService.getCurrentUserLogin().isPresent() == true
                 ? SecurityService.getCurrentUserLogin().get()
                 : " ";

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.PagingResultDTO;
+import com.java.springrestful.domain.dto.ResponseUpdateUserDTO;
 import com.java.springrestful.domain.dto.ResponseUserDTO;
 import com.java.springrestful.service.UserService;
 import com.java.springrestful.util.annotation.ApiMessage;
@@ -52,7 +53,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(convResponseUserDTO);
     }
 
-    @PostMapping("users")
+    @PostMapping("/users")
     @ApiMessage("Create a User")
     public ResponseEntity<CreateUserResultDTO> createUser(@RequestBody User user) throws IdInvalidException {
         boolean isEmailExist = this.userService.existsUserByEmail(user.getEmail());
@@ -65,14 +66,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createUserResultDTO);
     }
 
-    @PutMapping("users/{id}")
-    public ResponseEntity<User> updateUserById(@PathVariable("id") Long id,
-            @RequestBody User user) {
-        User userUpdate = this.userService.handleUpdateUserById(id, user);
-        return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
+    @PutMapping("/users")
+    @ApiMessage("Update a User")
+    public ResponseEntity<ResponseUpdateUserDTO> updateUserById(
+            @RequestBody User user) throws IdInvalidException {
+        User userUpdate = this.userService.handleUpdateUser(user);
+        if (userUpdate == null) {
+            throw new IdInvalidException("User with Id " + user.getId() + " is invalid");
+        }
+        ResponseUpdateUserDTO responseUpdateUserDTO = this.userService.convertToResponseUpdateUserDTO(userUpdate);
+        return ResponseEntity.status(HttpStatus.OK).body(responseUpdateUserDTO);
     }
 
-    @DeleteMapping("users/{id}")
+    @DeleteMapping("/users/{id}")
     @ApiMessage("Delelte a User")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") Long id)
             throws IdInvalidException {

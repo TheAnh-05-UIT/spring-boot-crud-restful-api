@@ -14,6 +14,7 @@ import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.MetaData;
 import com.java.springrestful.domain.dto.PagingResultDTO;
+import com.java.springrestful.domain.dto.ResponseUpdateUserDTO;
 import com.java.springrestful.domain.dto.ResponseUserDTO;
 import com.java.springrestful.repository.UserRepository;
 
@@ -75,12 +76,16 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public User handleUpdateUserById(Long id, User user) {
-        User userUpdate = this.handleGetUserById(id);
-        userUpdate.setEmail(user.getEmail());
-        userUpdate.setName(user.getName());
-        userUpdate.setPassword(user.getPassword());
-        return this.userRepository.save(userUpdate);
+    public User handleUpdateUser(User user) {
+        User userUpdate = this.handleGetUserById(user.getId());
+        if (userUpdate != null) {
+            userUpdate.setName(user.getName());
+            userUpdate.setGender(user.getGender());
+            userUpdate.setAge(user.getAge());
+            userUpdate.setAddress(user.getAddress());
+            userUpdate = this.userRepository.save(userUpdate);
+        }
+        return userUpdate;
     }
 
     public void handleDeleteUserById(Long id) {
@@ -115,6 +120,18 @@ public class UserService {
         res.setCreateAt(user.getCreateAt());
         res.setUpdateAt(user.getUpdateAt());
         return res;
+    }
+
+    public ResponseUpdateUserDTO convertToResponseUpdateUserDTO(User user) {
+        ResponseUpdateUserDTO responseUpdateUserDTO = new ResponseUpdateUserDTO();
+        responseUpdateUserDTO.setId(user.getId());
+        responseUpdateUserDTO.setName(user.getName());
+        responseUpdateUserDTO.setGender(user.getGender());
+        responseUpdateUserDTO.setAge(user.getAge());
+        responseUpdateUserDTO.setAddress(user.getAddress());
+        responseUpdateUserDTO.setUpdateAt(user.getUpdateAt());
+        responseUpdateUserDTO.setUpdateBy(user.getUpdateBy());
+        return responseUpdateUserDTO;
     }
 
     public boolean existsUserByEmail(String email) {
