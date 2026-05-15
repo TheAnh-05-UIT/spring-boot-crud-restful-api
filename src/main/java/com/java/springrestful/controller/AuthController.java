@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.LoginDTO;
+import com.java.springrestful.domain.dto.ResponseLoginDTO;
 import com.java.springrestful.service.SecurityService;
+import com.java.springrestful.service.UserService;
+import com.java.springrestful.util.annotation.ApiMessage;
 
 import jakarta.validation.Valid;
 
@@ -21,16 +25,20 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityService securityService;
+    private final UserService userService;
 
     public AuthController(
             AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityService securityService) {
+            SecurityService securityService,
+            UserService userService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityService = securityService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
+    @ApiMessage("Login Success")
+    public ResponseEntity<ResponseLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
 
         // nạp username và password vào security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -42,6 +50,18 @@ public class AuthController {
         String newToken = this.securityService.createToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok().body(newToken);
+        User userDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        ResponseLoginDTO responseLoginDTO = new ResponseLoginDTO();
+        if (userDB != null) {
+            ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
+                    userDB.getId(),
+                    userDB.getName(),
+                    userDB.getEmail());
+            responseLoginDTO.setUserLogin(userLogin);
+        }
+
+        responseLoginDTO.setAccessToken(newToken);
+
+        return ResponseEntity.ok().body(responseLoginDTO);
     }
 }
