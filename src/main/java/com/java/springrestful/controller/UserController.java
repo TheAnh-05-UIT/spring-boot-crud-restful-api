@@ -18,6 +18,7 @@ import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.PagingResultDTO;
 import com.java.springrestful.service.UserService;
 import com.java.springrestful.util.annotation.ApiMessage;
+import com.java.springrestful.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
 @RestController
@@ -46,7 +47,13 @@ public class UserController {
     }
 
     @PostMapping("users")
-    public ResponseEntity<CreateUserResultDTO> createUser(@RequestBody User user) {
+    @ApiMessage("Create a User")
+    public ResponseEntity<CreateUserResultDTO> createUser(@RequestBody User user) throws IdInvalidException {
+        boolean isEmailExist = this.userService.existsUserByEmail(user.getEmail());
+        if (isEmailExist) {
+            throw new IdInvalidException("Email " + user.getEmail() + " already exists, please use another email.");
+        }
+
         User newUser = this.userService.handleCreateUser(user);
         CreateUserResultDTO createUserResultDTO = this.userService.handleCreateUserResultDTO(newUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createUserResultDTO);
