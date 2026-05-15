@@ -16,12 +16,8 @@ public class CreateUserResultDTO {
     private Long id;
     private String name;
     private String email;
-
     private int age;
-
-    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
-
     private String address;
     private Instant createAt;
     private String createBy;
