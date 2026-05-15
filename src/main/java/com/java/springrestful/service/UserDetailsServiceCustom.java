@@ -22,6 +22,10 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.java.springrestful.domain.User user = this.userService.handleGetUserByUsername(username);
 
+        if (user == null) {
+            throw new UsernameNotFoundException("The username or password is invalid");
+        }
+
         return new User(
                 user.getEmail(),
                 user.getPassword(),
