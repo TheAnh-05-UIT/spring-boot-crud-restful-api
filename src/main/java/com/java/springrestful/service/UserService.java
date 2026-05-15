@@ -47,7 +47,10 @@ public class UserService {
 
     public User handleGetUserById(Long id) {
         Optional<User> optionalUser = this.userRepository.findById(id);
-        return optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+        return null;
     }
 
     public User handleCreateUser(User user) {
