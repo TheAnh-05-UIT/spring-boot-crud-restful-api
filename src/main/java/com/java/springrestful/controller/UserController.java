@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.java.springrestful.domain.User;
 import com.java.springrestful.domain.dto.CreateUserResultDTO;
 import com.java.springrestful.domain.dto.PagingResultDTO;
+import com.java.springrestful.domain.dto.ResponseUserDTO;
 import com.java.springrestful.service.UserService;
 import com.java.springrestful.util.annotation.ApiMessage;
 import com.java.springrestful.util.error.IdInvalidException;
@@ -41,9 +42,14 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    @ApiMessage("Get User by Id")
+    public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable("id") Long id) throws IdInvalidException {
         User userById = this.userService.handleGetUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(userById);
+        if (userById == null) {
+            throw new IdInvalidException("Id " + id + " does not exist");
+        }
+        ResponseUserDTO convResponseUserDTO = this.userService.convertToResponseUserDTO(userById);
+        return ResponseEntity.status(HttpStatus.OK).body(convResponseUserDTO);
     }
 
     @PostMapping("users")
